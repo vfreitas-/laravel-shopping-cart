@@ -1,0 +1,29 @@
+{
+    "name": "vfreitas-/laravel-shopping-cart",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vitor Freitas",
+            "email": "vitor_freitas_b@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "ShoppingCart\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "require": {
+        "illuminate/support": "^5.2",
+        "illuminate/config": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.3",
+        "laravel/laravel": "dev-develop"
+    }
+}
