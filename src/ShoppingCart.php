@@ -10,9 +10,9 @@ use ShoppingCart\Contracts\ShippingFee;
 use ShoppingCart\Contracts\ShoppingCartItem;
 
 /**
-* Class ShoppingCart
-* @package ShoppingCart
-*/
+ * Class ShoppingCart
+ * @package ShoppingCart
+ */
 class ShoppingCart
 {
     use InstanceTrait;

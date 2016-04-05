@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
         $app->config->set('shopping-cart.shipping_fee_class', ShippingFeeHandler::class);
 
         $this->app = $app;
-//dd($app);
+
         return $app;
     }
 

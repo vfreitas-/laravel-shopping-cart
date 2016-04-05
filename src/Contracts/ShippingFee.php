@@ -11,8 +11,8 @@ interface ShippingFee
     public function __construct();
 
     /**
-     *	Get the shipping fee value.
-     *	@return double
+     * Get the shipping fee value.
+     * @return double
      */
     public function getShippingFee();
 
