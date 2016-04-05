@@ -4,6 +4,7 @@ namespace ShoppingCart;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Config\Repository as Config;
 
 use ShoppingCart\Traits\InstanceTrait;
 use ShoppingCart\Contracts\ShippingFee;
@@ -27,8 +28,10 @@ class ShoppingCart
      */
     public function __construct()
     {
+        $this->sessionName = Config::get('shopping-cart.session_key');
+
         if(!Session::has($this->sessionName))
-            Session::put( $this->sessionName, collect() );
+            Session::put($this->sessionName, collect());
     }
 
     /**
@@ -59,9 +62,9 @@ class ShoppingCart
      * @param ProductVariation $product
      * @return Collection
      */
-    public function add($product)
+    public function add(ShoppingCartItem $item)
     {
-        Session::push( $this->sessionName, $product );
+        Session::push($this->sessionName, $item);
         return $this->getWithValue();
     }
 
@@ -69,7 +72,7 @@ class ShoppingCart
      * @param $productSku
      * @return mixed
      */
-    public function remove( $productSku )
+    public function remove($productSku)
     {
         $items = $this->get();
 
@@ -140,9 +143,14 @@ class ShoppingCart
     /**
      * @return mixed
      */
-    public function sum($field)
+    public function sum($field = null)
     {
-        return $this->get()->sum($field);
+        if(is_null($field))
+            return $this->get()->sum(function($item) {
+                $item->getPrice();
+            });
+        else
+            return $this->get()->sum($field);
     }
 
     /**
@@ -150,7 +158,10 @@ class ShoppingCart
      */
     public function getGrouped()
     {
-        $items = $this->get()->groupBy('sku');
+        $items = $this->get()->groupBy(function($item) {
+            return $item->getIdentifier();
+        });
+
         $groupedItems = collect();
 
         foreach($items as $item)

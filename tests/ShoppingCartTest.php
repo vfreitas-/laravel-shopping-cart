@@ -13,13 +13,6 @@ class ShoppingCartTest extends TestCase
         $this->assertEquals(Session::get('cart'), 'cart in session!');
     }
 
-    public function test_if_shopping_cart_is_a_singleton()
-    {
-        $shoppingCart = $this->app->make('shopping_cart');
-
-        $this->assertInstanceOf('ShoppingCart\ShoppingCart', $shoppingCart);
-    }
-
     public function test_mock()
     {
         $product = new ProductMock;

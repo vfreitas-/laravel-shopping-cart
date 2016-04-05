@@ -2,7 +2,7 @@
 
 namespace ShoppingCart\Contracts;
 
-interface ShoppingCart
+interface Store
 {
 
     
