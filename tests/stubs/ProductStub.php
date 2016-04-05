@@ -2,7 +2,7 @@
 
 use ShoppingCart\Contracts\ShoppingCartItem;
 
-class ProductMock implements ShoppingCartItem
+class ProductStub implements ShoppingCartItem
 {
 
     public $id;
