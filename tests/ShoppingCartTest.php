@@ -16,7 +16,7 @@ class ShoppingCartTest extends TestCase
 
     public function test_if_a_product_can_be_added_to_cart()
     {
-        $product = new ProductMock();
+        $product = new ProductStub();
 
         $cart = $this->shoppingCart->add($product);
 
