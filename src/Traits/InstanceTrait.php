@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Config\Repository as Config;
-
 namespace ShoppingCart\Traits;
 
 trait InstanceTrait
@@ -11,7 +9,7 @@ trait InstanceTrait
 
 	public function getInstance($key)
 	{
-		$clazz = Config::get($key);
+		$clazz = config("{$this->configName}.{$key}");
 		return new $clazz;
 	}
 }

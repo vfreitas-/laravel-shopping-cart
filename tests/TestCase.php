@@ -22,9 +22,10 @@ abstract class TestCase extends BaseTestCase
         $config = require __DIR__.'/../resources/config/shopping-cart.php';
 
         $app->config->set('shopping-cart', $config);
+        $app->config->set('shopping-cart.shipping_fee_class', ShippingFeeHandler::class);
 
         $this->app = $app;
-
+//dd($app);
         return $app;
     }
 

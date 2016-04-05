@@ -4,7 +4,6 @@ namespace ShoppingCart;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Config\Repository as Config;
 
 use ShoppingCart\Traits\InstanceTrait;
 use ShoppingCart\Contracts\ShippingFee;
@@ -24,11 +23,18 @@ class ShoppingCart
     protected $sessionName;
 
     /**
+     * @var shippingFeeHandler
+     */
+    protected $shippingFeeHandler;
+
+    /**
      *
      */
     public function __construct()
     {
-        $this->sessionName = Config::get('shopping-cart.session_key');
+        $this->sessionName = config('shopping-cart.session_key');
+
+        $this->shippingFeeHandler = $this->getInstance('shipping_fee_class');
 
         if(!Session::has($this->sessionName))
             Session::put($this->sessionName, collect());
@@ -69,15 +75,15 @@ class ShoppingCart
     }
 
     /**
-     * @param $productSku
+     * @param $identifier
      * @return mixed
      */
-    public function remove($productSku)
+    public function remove($identifier)
     {
         $items = $this->get();
 
-        $filtered = $items->filter(function ($item) use($productSku) {
-            return array_get($item, 'sku') != $productSku;
+        $filtered = $items->filter(function ($item) use($identifier) {
+            return array_get($item, 'sku') != $identifier;
         });
 
         $this->set($filtered);
@@ -86,16 +92,15 @@ class ShoppingCart
     }
 
     /**
-     * @param $productSku
+     * @param $identifier
      * @return mixed
      */
-    public function decreaseQuantity($productSku)
+    public function decreaseQuantity($identifier)
     {
-
         $items = $this->get();
 
-        $product = $items->filter(function($item) use($productSku) {
-            return array_get($item, 'sku') == $productSku;
+        $product = $items->filter(function($item) use($identifier) {
+            return array_get($item, 'sku') == $identifier;
         })->keys()[0];
 
         $filtered = $items->except([$product]);
@@ -108,11 +113,11 @@ class ShoppingCart
     /**
      * @return mixed
      */
-    public function replaceItem()
+    public function replaceItem($identifier, ShoppingCartItem $item)
     {
         $items = $this->get();
 
-        $filtered = $item->map(function($item, $key) use($oldProductSku, $product) {
+        $filtered = $item->map(function($item) use($identifier, $item) {
             return $item;
             //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
         });
@@ -172,6 +177,17 @@ class ShoppingCart
         }
 
         return $groupedItems;
+    }
+
+    /**
+     * @return double
+     */
+    public function getShippingFee()
+    {
+        if($this->shippingFeeHandler instanceof ShippingFee)
+            return $this->shippingFeeHandler->getShippingFee();
+        else
+            return 0;
     }
 
     /**

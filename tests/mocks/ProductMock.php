@@ -17,11 +17,11 @@ class ProductMock implements ShoppingCartItem
 
     public function getIdentifier()
     {
-        return $id;
+        return $this->id;
     }
 
     public function getPrice()
     {
-        return $price;
+        return $this->price;
     }
 }
