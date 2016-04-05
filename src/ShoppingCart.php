@@ -5,7 +5,9 @@ namespace ShoppingCart;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 
+use ShoppingCart\Traits\InstanceTrait;
 use ShoppingCart\Contracts\ShippingFee;
+use ShoppingCart\Contracts\ShoppingCartItem;
 
 /**
 * Class ShoppingCart
@@ -13,24 +15,18 @@ use ShoppingCart\Contracts\ShippingFee;
 */
 class ShoppingCart
 {
+    use InstanceTrait;
+
     /**
      * @var string
      */
     protected $sessionName;
 
     /**
-     * @var ShippingFee
-     */
-    protected $shippingFeeHandler;
-
-    /**
      *
      */
-    //public function __construct(ShippingFee $shippingFeeHandler)
     public function __construct()
     {
-        //$this->shippingFeeHandler = $shippingFeeHandler;
-
         if(!Session::has($this->sessionName))
             Session::put( $this->sessionName, collect() );
     }
@@ -38,7 +34,7 @@ class ShoppingCart
     /**
      * @param Collection $items
      */
-    public function set( Collection $items )
+    public function set(Collection $items)
     {
         Session::put( $this->sessionName, $items );
     }
@@ -63,11 +59,8 @@ class ShoppingCart
      * @param ProductVariation $product
      * @return Collection
      */
-    public function add( ProductVariation $product )
+    public function add($product)
     {
-        //TODO need refactor
-        $product = $this->fetchProductVariationDependencies($product);
-
         Session::push( $this->sessionName, $product );
         return $this->getWithValue();
     }
@@ -78,8 +71,6 @@ class ShoppingCart
      */
     public function remove( $productSku )
     {
-        $productSku = $this->convertSku($productSku);
-
         $items = $this->get();
 
         $filtered = $items->filter(function ($item) use($productSku) {
@@ -97,7 +88,6 @@ class ShoppingCart
      */
     public function decreaseQuantity($productSku)
     {
-        $productSku = $this->convertSku($productSku);
 
         $items = $this->get();
 
@@ -119,8 +109,8 @@ class ShoppingCart
     {
         $items = $this->get();
 
-        $filtered = $items->map(function($item, $key) use($oldProductSku, $product) {
-            return $item
+        $filtered = $item->map(function($item, $key) use($oldProductSku, $product) {
+            return $item;
             //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
         });
 
@@ -183,8 +173,7 @@ class ShoppingCart
             'total' => $this->sum(),
             'frete' => $this->getShippingFee(),
             'count' => $this->count(),
-            'totalPurchase' => $this->getTotalPurchaseValue(),
-            'discountCode' => $this->discountCodeService->get()
+            'totalPurchase' => $this->getTotalPurchaseValue()
         ]);
     }
 

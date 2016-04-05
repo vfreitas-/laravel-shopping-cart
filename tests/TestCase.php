@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Session\SessionManager;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected $app;
+
     /**
      * Boots the application.
      *
@@ -17,6 +18,12 @@ abstract class TestCase extends BaseTestCase
         $app->register('\ShoppingCart\Providers\ShoppingCartServiceProvider');
 
         $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
+        $config = require __DIR__.'/../resources/config/shopping-cart.php';
+
+        $app->config->set('shopping-cart', $config);
+
+        $this->app = $app;
 
         return $app;
     }

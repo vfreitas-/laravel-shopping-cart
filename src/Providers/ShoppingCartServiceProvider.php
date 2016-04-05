@@ -20,13 +20,9 @@ class ShoppingCartServiceProvider extends ServiceProvider
     */
     public function register()
     {
-        // $this->app->singleton('shopping_cart', function () {
-        //     return new SEOTools();
-        // });
-        // 
-        // $this->mergeConfigFrom(
-        //     $this->configFile, 'shopping-cart'
-        // );
+        $this->app->singleton('shopping_cart', function () {
+            return new ShoppingCart();
+        });
     }
 
     /**
@@ -39,6 +35,10 @@ class ShoppingCartServiceProvider extends ServiceProvider
         $this->publishes([
             $this->configFile => config_path('shopping-cart.php'),
         ]);
+
+        $this->mergeConfigFrom(
+            $this->configFile, 'shopping-cart'
+        );
     }
 
 }
