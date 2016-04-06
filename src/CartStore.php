@@ -64,14 +64,15 @@ class CartStore extends Store
      * @param ShoppingCartItem $item
      * @return void
      */
-    public function replaceItem($identifier, ShoppingCartItem $item)
+    public function replaceItem($identifier, ShoppingCartItem $newItem)
     {
         $items = $this->get();
 
-        $filtered = $item->map(
-            function ($item) use ($identifier, $item) {
-                return $item;
-                //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
+        $filtered = $items->map(
+            function ($item) use ($identifier, $newItem) {
+                return $item->getIdentifier() === $identifier
+                    ? $newItem
+                    : $item;
             }
         );
 

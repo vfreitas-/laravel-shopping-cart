@@ -89,7 +89,7 @@ class ShoppingCart
         foreach (range(1, $quantity) as $i) {
             $this->cartStore->decreaseQuantity($identifier);
         }
-        
+
         return $this->getWithValue();
     }
 
@@ -100,17 +100,7 @@ class ShoppingCart
      */
     public function replaceProduct($identifier, ShoppingCartItem $item)
     {
-        $items = $this->cartStore->get();
-
-        $filtered = $item->map(
-            function ($item) use ($identifier, $item) {
-                return $item;
-                //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
-            }
-        );
-
-        $this->set($filtered);
-
+        $this->cartStore->replaceItem($identifier, $item);
         return $this->getWithValue();
     }
 

@@ -72,8 +72,16 @@ class ShoppingCartTest extends TestCase
 
     public function test_cart_should_replace_a_product_()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $product1 = new ProductStub();
+        $product2 = new ProductStub();
+
+        $this->shoppingCart->addProduct($product1);
+
+        $cart = $this->shoppingCart->replaceProduct($product1->id, $product2);
+
+        $this->assertEquals(
+            $cart->get('items')[0]->id,
+            $product2->id
         );
     }
 
