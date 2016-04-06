@@ -137,14 +137,13 @@ class ShoppingCart
      */
     public function sum($field = null)
     {
-        if(is_null($field)) {
+        if (is_null($field)) {
             return $this->cartStore->get()->sum(
                 function ($item) {
                     $item->getPrice();
                 }
             );
-        }
-        else {
+        } else {
             return $this->cartStore->get()->sum($field);
         }
     }
@@ -163,8 +162,7 @@ class ShoppingCart
 
         $groupedItems = collect();
 
-        foreach ($items as $item)
-        {
+        foreach ($items as $item) {
             $pr = $item->first();
             $pr->quantity = $item->count();
             $groupedItems->push($pr);
@@ -178,10 +176,9 @@ class ShoppingCart
      */
     public function getShippingFee()
     {
-        if($this->shippingFeeHandler instanceof ShippingFee) {
+        if ($this->shippingFeeHandler instanceof ShippingFee) {
             return $this->shippingFeeHandler->getShippingFee();
-        }
-        else {
+        } else {
             return 0;
         }
     }
