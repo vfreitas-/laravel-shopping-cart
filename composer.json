@@ -8,6 +8,9 @@
         }
     ],
     "minimum-stability": "dev",
+    "scripts": {
+        "cs": "./vendor/bin/phpcs --standard=PSR2 src"
+    },
     "autoload": {
         "psr-4": {
             "ShoppingCart\\": "src/"

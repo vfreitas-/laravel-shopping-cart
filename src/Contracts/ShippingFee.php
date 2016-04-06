@@ -4,7 +4,6 @@ namespace ShoppingCart\Contracts;
 
 interface ShippingFee
 {
-
     /**
      * Constructor
      */
@@ -12,8 +11,8 @@ interface ShippingFee
 
     /**
      * Get the shipping fee value.
+     *
      * @return double
      */
     public function getShippingFee();
-
 }

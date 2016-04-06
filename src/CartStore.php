@@ -11,7 +11,8 @@ use ShoppingCart\Contracts\ShoppingCartItem;
 class CartStore extends Store
 {
     /**
-     * @param mixed $value
+     * @param Collection $value
+     * @return void
      */
     public function set(Collection $value)
     {
@@ -21,7 +22,8 @@ class CartStore extends Store
 
 
     /**
-     * @param ShoppingCartItem
+     * @param ShoppingCartItem $item
+     * @return void
      */
     public function add(ShoppingCartItem $item)
     {
@@ -32,30 +34,35 @@ class CartStore extends Store
     }
 
     /**
-     * @param $identifier
+     * @param mixed $identifier
+     * @return void
      */
     public function remove($identifier)
     {
         $items = $this->get();
 
-        $filtered = $items->filter(function ($item) use($identifier) {
-            return array_get($item, 'sku') != $identifier;
-        });
+        $filtered = $items->filter(
+            function ($item) use ($identifier) {
+                return array_get($item, 'sku') != $identifier;
+            }
+        );
 
         $this->set($filtered);
     }
 
     /**
-     * @param $identifier
-     * @return mixed
+     * @param mixed $identifier
+     * @return void
      */
     public function decreaseQuantity($identifier)
     {
         $items = $this->get();
 
-        $product = $items->filter(function($item) use($identifier) {
-            return array_get($item, 'sku') == $identifier;
-        })->keys()[0];
+        $product = $items->filter(
+            function ($item) use ($identifier) {
+                return array_get($item, 'sku') == $identifier;
+            }
+        )->keys()[0];
 
         $filtered = $items->except([$product]);
 
@@ -63,16 +70,20 @@ class CartStore extends Store
     }
 
     /**
-     * @return mixed
+     * @param mixed            $identifier
+     * @param ShoppingCartItem $item
+     * @return void
      */
     public function replaceItem($identifier, ShoppingCartItem $item)
     {
         $items = $this->get();
 
-        $filtered = $item->map(function($item) use($identifier, $item) {
-            return $item;
-            //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
-        });
+        $filtered = $item->map(
+            function ($item) use ($identifier, $item) {
+                return $item;
+                //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
+            }
+        );
 
         $this->set($filtered);
     }

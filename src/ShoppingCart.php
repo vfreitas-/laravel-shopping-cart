@@ -12,6 +12,7 @@ use ShoppingCart\Contracts\ShoppingCartItem;
 
 /**
  * Class ShoppingCart
+ *
  * @package ShoppingCart
  */
 class ShoppingCart
@@ -64,9 +65,11 @@ class ShoppingCart
     {
         $items = $this->cartStore->get();
 
-        $filtered = $items->filter(function ($item) use($identifier) {
-            return array_get($item, 'sku') != $identifier;
-        });
+        $filtered = $items->filter(
+            function ($item) use ($identifier) {
+                return array_get($item, 'sku') != $identifier;
+            }
+        );
 
         $this->set($filtered);
 
@@ -81,9 +84,11 @@ class ShoppingCart
     {
         $items = $this->cartStore->get();
 
-        $product = $items->filter(function($item) use($identifier) {
-            return array_get($item, 'sku') == $identifier;
-        })->keys()[0];
+        $product = $items->filter(
+            function ($item) use ($identifier) {
+                return array_get($item, 'sku') == $identifier;
+            }
+        )->keys()[0];
 
         $filtered = $items->except([$product]);
 
@@ -99,10 +104,12 @@ class ShoppingCart
     {
         $items = $this->cartStore->get();
 
-        $filtered = $item->map(function($item) use($identifier, $item) {
-            return $item;
-            //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
-        });
+        $filtered = $item->map(
+            function ($item) use ($identifier, $item) {
+                return $item;
+                //return array_get($item, 'sku') === $oldProductSku ? $product : $item;
+            }
+        );
 
         $this->set($filtered);
 
@@ -111,7 +118,6 @@ class ShoppingCart
 
     /**
      * @return mixed
-     *
      */
     public function count()
     {
@@ -120,7 +126,6 @@ class ShoppingCart
 
     /**
      * @return mixed
-     *
      */
     public function isEmpty()
     {
@@ -132,12 +137,16 @@ class ShoppingCart
      */
     public function sum($field = null)
     {
-        if(is_null($field))
-            return $this->cartStore->get()->sum(function($item) {
-                $item->getPrice();
-            });
-        else
-            return $this->cartStore->get()->sum($field);
+        if(is_null($field)) {
+            return $this->cartStore->get()->sum(
+                function ($item) {
+                    $item->getPrice();
+                }
+        }
+            );
+            else {
+                return $this->cartStore->get()->sum($field);
+            }
     }
 
     /**
@@ -146,13 +155,15 @@ class ShoppingCart
     public function getGrouped()
     {
         dd($this->cartStore->get());
-        $items = $this->cartStore->get()->groupBy(function($item) {
-            return $item->getIdentifier();
-        });
+        $items = $this->cartStore->get()->groupBy(
+            function ($item) {
+                return $item->getIdentifier();
+            }
+        );
 
         $groupedItems = collect();
 
-        foreach($items as $item)
+        foreach ($items as $item)
         {
             $pr = $item->first();
             $pr->quantity = $item->count();
@@ -167,10 +178,12 @@ class ShoppingCart
      */
     public function getShippingFee()
     {
-        if($this->shippingFeeHandler instanceof ShippingFee)
+        if($this->shippingFeeHandler instanceof ShippingFee) {
             return $this->shippingFeeHandler->getShippingFee();
-        else
+        }
+        else {
             return 0;
+        }
     }
 
     /**
@@ -178,13 +191,15 @@ class ShoppingCart
      */
     public function getWithValue()
     {
-        return collect([
-            'items' => $this->getGrouped(),
-            'total' => $this->sum(),
-            'frete' => $this->getShippingFee(),
-            'count' => $this->count(),
-            'totalPurchase' => $this->getTotalPurchaseValue()
-        ]);
+        return collect(
+            [
+                'items' => $this->getGrouped(),
+                'total' => $this->sum(),
+                'frete' => $this->getShippingFee(),
+                'count' => $this->count(),
+                'totalPurchase' => $this->getTotalPurchaseValue()
+            ]
+        );
     }
 
     /**

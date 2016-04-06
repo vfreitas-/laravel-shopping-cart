@@ -11,6 +11,8 @@ trait InstanceTrait
     {
         $clazz = config("{$this->configName}.{$key}");
 
-        if(!is_null($clazz)) return new $clazz;
+        if (!is_null($clazz)) {
+            return new $clazz;
+        }
     }
 }

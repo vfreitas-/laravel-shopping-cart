@@ -10,6 +10,7 @@ use ShoppingCart\Contracts\ShoppingCartItem;
 
 /**
  * Class DiscountCodeStore
+ *
  * @package ShoppingCart
  */
 class DiscountCodeStore extends Store
@@ -33,12 +34,14 @@ class DiscountCodeStore extends Store
      */
     public function registerDiscountCode(Collection $items)
     {
-        return $items->map(function($item) {
-            $final_price = $this->verifyDiscount($item);
-            $item->old_final_price = $item->final_price;
-            $item->final_price = $final_price;
-            return $item;
-        });
+        return $items->map(
+            function ($item) {
+                $final_price = $this->verifyDiscount($item);
+                $item->old_final_price = $item->final_price;
+                $item->final_price = $final_price;
+                return $item;
+            }
+        );
     }
 
     /**
@@ -50,10 +53,12 @@ class DiscountCodeStore extends Store
         $this->clear();
         $this->set();
 
-        return $items->map(function($item) {
-            $item->final_price = $item->old_final_price;
-            return $item;
-        });
+        return $items->map(
+            function ($item) {
+                $item->final_price = $item->old_final_price;
+                return $item;
+            }
+        );
     }
 
     /**
@@ -63,11 +68,14 @@ class DiscountCodeStore extends Store
     private function verifyDiscount(ShoppingCartItem $item)
     {
         $discountCode = $this->get();
-        if(empty($discountCode)) return $item->final_price;
+
+        if (empty($discountCode)) {
+            return $item->final_price;
+        }
 
         $code_pct = floatval($discountCode->discount_pct);
 
-        if($code_pct >= $item->discount_rate) {
+        if ($code_pct >= $item->discount_rate) {
             $rate = ($code_pct / 100);
             $discount = $item->original_price * $rate;
             return $item->original_price - $discount;
