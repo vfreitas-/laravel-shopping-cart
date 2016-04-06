@@ -49,9 +49,9 @@ or
 php artisan vendor:publish --provider="ShoppingCart\Providers\ShoppingCartServiceProvider"
 ```
 
-5 - Usage
+### 5 - Usage
 
-6 - Tests and Codesniffer(PSR2)
+### 6 - Tests and Codesniffer(PSR2)
 
 To run tests
 ```shell
