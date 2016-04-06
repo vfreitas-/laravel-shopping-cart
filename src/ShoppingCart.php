@@ -153,7 +153,6 @@ class ShoppingCart
      */
     public function getGrouped()
     {
-        dd($this->cartStore->get());
         $items = $this->cartStore->get()->groupBy(
             function ($item) {
                 return $item->getIdentifier();

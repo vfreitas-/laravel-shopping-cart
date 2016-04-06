@@ -11,26 +11,16 @@ use ShoppingCart\Contracts\ShoppingCartItem;
 class CartStore extends Store
 {
     /**
-     * @param Collection $value
-     * @return void
-     */
-    public function set(Collection $value)
-    {
-        //parent::set($value);
-        Session::put($this->sessionName, $value);
-    }
-
-
-    /**
      * @param ShoppingCartItem $item
      * @return void
      */
     public function add(ShoppingCartItem $item)
     {
-        // if(!Session::has($this->sessionName))
-        //     Session::put($this->sessionName, collect());
-        // else
+        if (!Session::has($this->sessionName)) {
+            Session::put($this->sessionName, collect([$item]));
+        } else {
             Session::push($this->sessionName, $item);
+        }
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace ShoppingCart\Contracts;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 
 abstract class Store
@@ -14,15 +15,16 @@ abstract class Store
     /**
      * @param  string $sessionName
      */
-    protected function __costruct($sessionName = null)
+    public function __construct($sessionName = null)
     {
         $this->sessionName = $sessionName;
     }
 
     /**
-     * @param mixed $value
+     * @param Collection $value
+     * @return void
      */
-    public function set($value)
+    public function set(Collection $value)
     {
         Session::put($this->sessionName, $value);
     }
@@ -36,7 +38,7 @@ abstract class Store
     }
 
     /**
-     *
+     * @return void
      */
     public function clear()
     {
@@ -44,7 +46,7 @@ abstract class Store
     }
 
     /**
-     *
+     * @return void
      */
     public function has()
     {
