@@ -51,7 +51,7 @@ class ShoppingCart
      * @param ProductVariation $product
      * @return Collection
      */
-    public function add(ShoppingCartItem $item)
+    public function addProduct(ShoppingCartItem $item)
     {
         $this->cartStore->add($item);
         return $this->getWithValue();
@@ -61,7 +61,7 @@ class ShoppingCart
      * @param $identifier
      * @return mixed
      */
-    public function remove($identifier)
+    public function removeProduct($identifier)
     {
         $items = $this->cartStore->get();
 
@@ -80,7 +80,7 @@ class ShoppingCart
      * @param $identifier
      * @return mixed
      */
-    public function decreaseQuantity($identifier)
+    public function decreaseProductQnt($identifier)
     {
         $items = $this->cartStore->get();
 
@@ -100,7 +100,7 @@ class ShoppingCart
     /**
      * @return mixed
      */
-    public function replaceItem($identifier, ShoppingCartItem $item)
+    public function replaceProduct($identifier, ShoppingCartItem $item)
     {
         $items = $this->cartStore->get();
 
@@ -142,11 +142,11 @@ class ShoppingCart
                 function ($item) {
                     $item->getPrice();
                 }
-        }
             );
-            else {
-                return $this->cartStore->get()->sum($field);
-            }
+        }
+        else {
+            return $this->cartStore->get()->sum($field);
+        }
     }
 
     /**
@@ -191,15 +191,13 @@ class ShoppingCart
      */
     public function getWithValue()
     {
-        return collect(
-            [
-                'items' => $this->getGrouped(),
-                'total' => $this->sum(),
-                'frete' => $this->getShippingFee(),
-                'count' => $this->count(),
-                'totalPurchase' => $this->getTotalPurchaseValue()
-            ]
-        );
+        return collect([
+            'items' => $this->getGrouped(),
+            'total' => $this->sum(),
+            'frete' => $this->getShippingFee(),
+            'count' => $this->count(),
+            'totalPurchase' => $this->getTotalPurchaseValue()
+        ]);
     }
 
     /**
