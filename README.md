@@ -36,7 +36,7 @@ In order to use the `ShoppingCart` facade, you need to register it on the `confi
 ```
 
 
-### 4 Configuration
+### 4 - Configuration
 
 #### Publish config
 
@@ -48,3 +48,22 @@ or
 ```shell
 php artisan vendor:publish --provider="ShoppingCart\Providers\ShoppingCartServiceProvider"
 ```
+
+5 - Usage
+
+6 - Tests and Codesniffer(PSR2)
+
+To run tests
+```shell
+phpunit
+```
+
+To run the codesniffer coverage
+```shell
+composer cs
+```
+or
+```shell
+composer run-script cs
+```
+
