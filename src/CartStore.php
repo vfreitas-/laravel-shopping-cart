@@ -33,7 +33,7 @@ class CartStore extends Store
 
         $filtered = $items->filter(
             function ($item) use ($identifier) {
-                return array_get($item, 'sku') != $identifier;
+                return $item->getIdentifier() !== $identifier;
             }
         );
 

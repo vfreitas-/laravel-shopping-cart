@@ -76,16 +76,7 @@ class ShoppingCart
      */
     public function removeProduct($identifier)
     {
-        $items = $this->cartStore->get();
-
-        $filtered = $items->filter(
-            function ($item) use ($identifier) {
-                return array_get($item, 'sku') != $identifier;
-            }
-        );
-
-        $this->set($filtered);
-
+        $this->cartStore->remove($identifier);
         return $this->getWithValue();
     }
 
@@ -178,7 +169,7 @@ class ShoppingCart
 
         foreach ($items as $item) {
             $pr = $item->first();
-            $pr->quantity = $item->count();
+            $pr->spc_quantity = $item->count();
             $groupedItems->push($pr);
         }
 

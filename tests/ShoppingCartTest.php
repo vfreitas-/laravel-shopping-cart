@@ -43,8 +43,14 @@ class ShoppingCartTest extends TestCase
 
     public function test_cart_should_remove_a_product()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $product = new ProductStub();
+
+        $this->shoppingCart->addProduct($product);
+
+        $cart = $this->shoppingCart->removeProduct($product->id);
+
+        $this->assertTrue(
+            $cart->get('items')->isEmpty()
         );
     }
 
