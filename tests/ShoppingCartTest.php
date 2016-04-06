@@ -56,8 +56,17 @@ class ShoppingCartTest extends TestCase
 
     public function test_cart_should_decrease_a_product_quantity()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $product = new ProductStub();
+
+        $this->shoppingCart->addProduct($product);
+        $this->shoppingCart->addProduct($product);
+        $this->shoppingCart->addProduct($product);
+
+        $cart = $this->shoppingCart->decreaseProductQnt($product->id, 2);
+
+        $this->assertEquals(
+            $cart->get('items')->count(),
+            1
         );
     }
 

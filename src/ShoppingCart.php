@@ -84,20 +84,12 @@ class ShoppingCart
      * @param $identifier
      * @return mixed
      */
-    public function decreaseProductQnt($identifier)
+    public function decreaseProductQnt($identifier, $quantity = 1)
     {
-        $items = $this->cartStore->get();
-
-        $product = $items->filter(
-            function ($item) use ($identifier) {
-                return array_get($item, 'sku') == $identifier;
-            }
-        )->keys()[0];
-
-        $filtered = $items->except([$product]);
-
-        $this->set($filtered);
-
+        foreach (range(1, $quantity) as $i) {
+            $this->cartStore->decreaseQuantity($identifier);
+        }
+        
         return $this->getWithValue();
     }
 
