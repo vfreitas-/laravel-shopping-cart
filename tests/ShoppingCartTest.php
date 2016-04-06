@@ -20,7 +20,25 @@ class ShoppingCartTest extends TestCase
 
         $cart = $this->shoppingCart->addProduct($product);
 
-        $this->assertEquals($cart->get('items')->count(), 1);
+        $this->assertEquals(
+            $cart->get('items')->count(),
+            1
+        );
+    }
+
+    public function test_should_add_an_array_of_products_to_cart()
+    {
+        $product1 = new ProductStub();
+        $product2 = new ProductStub();
+
+        $products = [$product1, $product2];
+
+        $cart = $this->shoppingCart->addProducts($products);
+
+        $this->assertEquals(
+            $cart->get('items')->count(),
+            2
+        );
     }
 
     public function test_cart_should_remove_a_product()

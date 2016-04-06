@@ -48,12 +48,25 @@ class ShoppingCart
     }
 
     /**
-     * @param ProductVariation $product
+     * @param ShoppingCartItem $item
      * @return Collection
      */
     public function addProduct(ShoppingCartItem $item)
     {
         $this->cartStore->add($item);
+        return $this->getWithValue();
+    }
+
+    /**
+     * @param array $items
+     * @return Collection
+     */
+    public function addProducts(array $items)
+    {
+        foreach ($items as $item) {
+            $this->cartStore->add($item);
+        }
+
         return $this->getWithValue();
     }
 
@@ -98,6 +111,8 @@ class ShoppingCart
     }
 
     /**
+     * @param $identifier
+     * @param ShoppingCartItem $item
      * @return mixed
      */
     public function replaceProduct($identifier, ShoppingCartItem $item)
