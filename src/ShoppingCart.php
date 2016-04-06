@@ -3,8 +3,9 @@
 namespace ShoppingCart;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Session;
 
+use ShoppingCart\CartStore;
+use ShoppingCart\DiscountCodeStore;
 use ShoppingCart\Traits\InstanceTrait;
 use ShoppingCart\Contracts\ShippingFee;
 use ShoppingCart\Contracts\ShoppingCartItem;
@@ -18,9 +19,14 @@ class ShoppingCart
     use InstanceTrait;
 
     /**
-     * @var string
+     * @var CartStore
      */
-    protected $sessionName;
+    protected $cartStore;
+
+    /**
+     * @var DiscountCodeStore
+     */
+    protected $discountCodeStore;
 
     /**
      * @var shippingFeeHandler
@@ -32,36 +38,12 @@ class ShoppingCart
      */
     public function __construct()
     {
-        $this->sessionName = config('shopping-cart.session_key');
+        $key = config('shopping-cart.session_key');
+
+        $this->cartStore = new CartStore("{$key}.cart");
+        $this->discountCodeStore = new DiscountCodeStore("{$key}.discount_code");
 
         $this->shippingFeeHandler = $this->getInstance('shipping_fee_class');
-
-        if(!Session::has($this->sessionName))
-            Session::put($this->sessionName, collect());
-    }
-
-    /**
-     * @param Collection $items
-     */
-    public function set(Collection $items)
-    {
-        Session::put( $this->sessionName, $items );
-    }
-
-    /**
-     * @return mixed
-     */
-    public function get()
-    {
-        return Session::get($this->sessionName);
-    }
-
-    /**
-     *
-     */
-    public function clear()
-    {
-        Session::forget($this->sessionName);
     }
 
     /**
@@ -70,7 +52,7 @@ class ShoppingCart
      */
     public function add(ShoppingCartItem $item)
     {
-        Session::push($this->sessionName, $item);
+        $this->cartStore->add($item);
         return $this->getWithValue();
     }
 
@@ -80,7 +62,7 @@ class ShoppingCart
      */
     public function remove($identifier)
     {
-        $items = $this->get();
+        $items = $this->cartStore->get();
 
         $filtered = $items->filter(function ($item) use($identifier) {
             return array_get($item, 'sku') != $identifier;
@@ -97,7 +79,7 @@ class ShoppingCart
      */
     public function decreaseQuantity($identifier)
     {
-        $items = $this->get();
+        $items = $this->cartStore->get();
 
         $product = $items->filter(function($item) use($identifier) {
             return array_get($item, 'sku') == $identifier;
@@ -115,7 +97,7 @@ class ShoppingCart
      */
     public function replaceItem($identifier, ShoppingCartItem $item)
     {
-        $items = $this->get();
+        $items = $this->cartStore->get();
 
         $filtered = $item->map(function($item) use($identifier, $item) {
             return $item;
@@ -133,7 +115,7 @@ class ShoppingCart
      */
     public function count()
     {
-        return $this->get()->count();
+        return $this->cartStore->get()->count();
     }
 
     /**
@@ -142,7 +124,7 @@ class ShoppingCart
      */
     public function isEmpty()
     {
-        return $this->get()->isEmpty();
+        return $this->cartStore->get()->isEmpty();
     }
 
     /**
@@ -151,11 +133,11 @@ class ShoppingCart
     public function sum($field = null)
     {
         if(is_null($field))
-            return $this->get()->sum(function($item) {
+            return $this->cartStore->get()->sum(function($item) {
                 $item->getPrice();
             });
         else
-            return $this->get()->sum($field);
+            return $this->cartStore->get()->sum($field);
     }
 
     /**
@@ -163,7 +145,8 @@ class ShoppingCart
      */
     public function getGrouped()
     {
-        $items = $this->get()->groupBy(function($item) {
+        dd($this->cartStore->get());
+        $items = $this->cartStore->get()->groupBy(function($item) {
             return $item->getIdentifier();
         });
 
