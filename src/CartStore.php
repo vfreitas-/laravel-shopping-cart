@@ -78,4 +78,22 @@ class CartStore extends Store
 
         $this->set($filtered);
     }
+
+    /**
+     * Sum price from cart items
+     * @param $field
+     * @return double
+     */
+    public function sum($field = null)
+    {
+        if (is_null($field)) {
+            return $this->get()->sum(
+                function ($item) {
+                    return $item->getPrice();
+                }
+            );
+        } else {
+            return $this->get()->sum($field);
+        }
+    }
 }

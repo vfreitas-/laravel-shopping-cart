@@ -9,10 +9,12 @@ trait InstanceTrait
 
     public function getInstance($key)
     {
-        $clazz = config("{$this->configName}.{$key}");
+        $value = config("{$this->configName}.{$key}");
 
-        if (!is_null($clazz)) {
-            return new $clazz;
+        //list($class, $method) = explode('@', $value);
+//        dd(is_string($clazz));
+        if (!is_null($value)) {
+            return new $value;
         }
     }
 }

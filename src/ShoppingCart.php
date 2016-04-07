@@ -54,7 +54,7 @@ class ShoppingCart
     public function addProduct(ShoppingCartItem $item)
     {
         $this->cartStore->add($item);
-        return $this->getWithValue();
+        return $this->getCartDetail();
     }
 
     /**
@@ -67,7 +67,7 @@ class ShoppingCart
             $this->cartStore->add($item);
         }
 
-        return $this->getWithValue();
+        return $this->getCartDetail();
     }
 
     /**
@@ -77,7 +77,7 @@ class ShoppingCart
     public function removeProduct($identifier)
     {
         $this->cartStore->remove($identifier);
-        return $this->getWithValue();
+        return $this->getCartDetail();
     }
 
     /**
@@ -90,7 +90,7 @@ class ShoppingCart
             $this->cartStore->decreaseQuantity($identifier);
         }
 
-        return $this->getWithValue();
+        return $this->getCartDetail();
     }
 
     /**
@@ -101,7 +101,16 @@ class ShoppingCart
     public function replaceProduct($identifier, ShoppingCartItem $item)
     {
         $this->cartStore->replaceItem($identifier, $item);
-        return $this->getWithValue();
+        return $this->getCartDetail();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function clearCart()
+    {
+        $this->cartStore->clear();
+        return $this->getCartDetail();
     }
 
     /**
@@ -125,15 +134,7 @@ class ShoppingCart
      */
     public function sum($field = null)
     {
-        if (is_null($field)) {
-            return $this->cartStore->get()->sum(
-                function ($item) {
-                    $item->getPrice();
-                }
-            );
-        } else {
-            return $this->cartStore->get()->sum($field);
-        }
+        return $this->cartStore->sum($field);
     }
 
     /**
@@ -150,9 +151,9 @@ class ShoppingCart
         $groupedItems = collect();
 
         foreach ($items as $item) {
-            $pr = $item->first();
-            $pr->spc_quantity = $item->count();
-            $groupedItems->push($pr);
+            $t = $item->first();
+            $t->spc_quantity = $item->count();
+            $groupedItems->push($t);
         }
 
         return $groupedItems;
@@ -173,7 +174,7 @@ class ShoppingCart
     /**
      * @return Collection
      */
-    public function getWithValue()
+    public function getCartDetail()
     {
         return collect([
             'items' => $this->getGrouped(),
@@ -189,6 +190,6 @@ class ShoppingCart
      */
     public function getTotalPurchaseValue()
     {
-        return $this->sum('final_price') + $this->getShippingFee();
+        return $this->sum() + $this->getShippingFee();
     }
 }

@@ -41,6 +41,25 @@ class ShoppingCartTest extends TestCase
         );
     }
 
+    public function test_that_equal_products_hava_quantity_property()
+    {
+        $product = new ProductStub();
+
+        $this->shoppingCart->addProducts([$product, $product]);
+
+        $cart = $this->shoppingCart->getCartDetail();
+
+        $this->assertEquals(
+            $cart->get('items')->count(),
+            1
+        );
+
+        $this->assertEquals(
+            $cart->get('items')->first()->spc_quantity,
+            2
+        );
+    }
+
     public function test_cart_should_remove_a_product()
     {
         $product = new ProductStub();
@@ -87,22 +106,19 @@ class ShoppingCartTest extends TestCase
 
     public function test_cart_should_sum_products_price()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+        $product1 = new ProductStub();
+        $product2 = new ProductStub();
 
-    public function test_cart_should_sum_products_field()
-    {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+        $product1->price = 100;
+        $product2->price = 200;
 
-    public function test_cart_should_return_shipping_fee_value_from_passed_implementation()
-    {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+        $cart = $this->shoppingCart->addProducts([$product1, $product2]);
+
+        $sum = $this->shoppingCart->sum();
+
+        $this->assertEquals(
+            $sum,
+            300
         );
     }
 
@@ -116,5 +132,7 @@ class ShoppingCartTest extends TestCase
         parent::setUp();
 
         $this->shoppingCart = $this->app->make('shopping_cart');
+
+        Session::flush();
     }
 }
