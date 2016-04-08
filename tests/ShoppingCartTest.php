@@ -122,6 +122,21 @@ class ShoppingCartTest extends TestCase
         );
     }
 
+    public function test_should_find_the_first_product_by_field_and_value()
+    {
+        $product1 = new ProductStub();
+        $product2 = new ProductStub();
+
+        $this->shoppingCart->addProducts([$product1, $product1, $product2]);
+
+        $cart = $this->shoppingCart->findProduct('id', $product1->id);
+dd($cart);
+        $this->assertEquals(
+            $cart->count(),
+            2
+        );
+    }
+
     /**
      * Setup DB before each test.
      *

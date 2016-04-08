@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\Session;
 use ShoppingCart\Contracts\Store;
 use ShoppingCart\Contracts\ShoppingCartItem;
 
+use ShoppingCart\Traits\FindInCollectionTrait;
+
 class CartStore extends Store
 {
+    use FindInCollectionTrait;
+
     /**
      * @param ShoppingCartItem $item
      * @return void
@@ -95,5 +99,29 @@ class CartStore extends Store
         } else {
             return $this->get()->sum($field);
         }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getGrouped(Collection $items = null)
+    {
+        if (is_null($items)) {
+            $items = $this->get()->groupBy(
+                function ($item) {
+                    return $item->getIdentifier();
+                }
+            );
+        }
+
+        $groupedItems = collect();
+
+        foreach ($items as $item) {
+            $t = $item->first();
+            $t->spc_quantity = $item->count();
+            $groupedItems->push($t);
+        }
+
+        return $groupedItems;
     }
 }

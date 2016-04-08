@@ -105,6 +105,26 @@ class ShoppingCart
     }
 
     /**
+     * @param  string $field
+     * @param  any $value
+     * @return ShoppingCartItem
+     */
+    public function findProduct($field, $value, array $options = [])
+    {
+        return $this->cartStore->findByField($field, $value, $options);
+    }
+
+    /**
+     * @param  string $field
+     * @param  any $value
+     * @return ShoppingCartItem
+     */
+    public function findProductWhere(array $where, array $options = [])
+    {
+        return $this->cartStore->findWhere($where, $options);
+    }
+
+    /**
      * @return mixed
      */
     public function clearCart()
@@ -140,23 +160,9 @@ class ShoppingCart
     /**
      * @return Collection
      */
-    public function getGrouped()
+    public function getCartGrouped()
     {
-        $items = $this->cartStore->get()->groupBy(
-            function ($item) {
-                return $item->getIdentifier();
-            }
-        );
-
-        $groupedItems = collect();
-
-        foreach ($items as $item) {
-            $t = $item->first();
-            $t->spc_quantity = $item->count();
-            $groupedItems->push($t);
-        }
-
-        return $groupedItems;
+        return $this->cartStore->getGrouped();
     }
 
     /**
@@ -177,7 +183,7 @@ class ShoppingCart
     public function getCartDetail()
     {
         return collect([
-            'items' => $this->getGrouped(),
+            'items' => $this->getCartGrouped(),
             'total' => $this->sum(),
             'frete' => $this->getShippingFee(),
             'count' => $this->count(),
